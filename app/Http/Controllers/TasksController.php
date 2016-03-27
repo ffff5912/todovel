@@ -9,14 +9,22 @@ use App\Http\Requests;
 use App\Project;
 use App\Task;
 use App\Http\Controllers\Controller;
+use App\Repository\TaskRepositoryInterface;
 
 class TasksController extends Controller
 {
+    private $task_reository;
+
     protected $rules = [
         'name' => ['required', 'min:3'],
         'slug' => ['required'],
         'description' => ['required'],
     ];
+
+    public function __construct(TaskRepositoryInterface $task_reository)
+    {
+        $this->task_reository = $task_reository;
+    }
 
     /**
      * Display a listing of the resource.
@@ -53,7 +61,7 @@ class TasksController extends Controller
 
         $input = Input::all();
         $input['project_id'] = $project->id;
-        Task::create($input);
+        $this->task_reository->store($input);
 
         return Redirect::route('projects.show', $project->slug)->with('message', 'Task created');
     }
@@ -94,9 +102,9 @@ class TasksController extends Controller
     {
         $this->validate($request, $this->rules);
 
-        $input = array_except(Input::all(), '_method');
+        $input = array_except(Input::all(), ['_method', '_token']);
         $input['project_id'] = $project->id;
-        Task::create($input);
+        $this->task_reository->update($input, $task->id);
 
         return Redirect::route('projects.tasks.show', [$project->slug, $task->slug])->with('message', 'Task updated');
     }
@@ -110,7 +118,7 @@ class TasksController extends Controller
      */
     public function destroy(Project $project, Task $task)
     {
-        $task->delete();
+        $this->task_reository->destroy($task->id);
 
         return Redirect::route('projects.show', $project->slug)->with('message', 'Task deleted');
     }

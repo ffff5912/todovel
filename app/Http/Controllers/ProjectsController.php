@@ -8,17 +8,26 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Project;
 use App\Http\Controllers;
+use App\Repository\ProjectRepositoryInterface;
 
 class ProjectsController extends Controller
 {
-    protected $roles = [
+    private $project_repository;
+
+    protected $rules = [
         'name' => ['required' => 'min:3'],
         'slug' => ['required'],
     ];
 
+    public function __construct(ProjectRepositoryInterface $project_repository)
+    {
+        $this->project_repository = $project_repository;
+    }
+
     public function index()
     {
-        $projects = Project::all();
+        $projects = $this->project_repository->findAll();
+
         return view('projects.index', compact('projects'));
     }
 
@@ -31,8 +40,7 @@ class ProjectsController extends Controller
     {
         $this->validate($request, $this->rules);
 
-        $input = Input::all();
-        Project::create($input);
+        $this->project_repository->store(Input::all());
 
         return Redirect::route('projects.index')->with('message', 'Project created');
     }
@@ -50,15 +58,16 @@ class ProjectsController extends Controller
     public function update(Project $project, Request $request)
     {
         $this->validate($request, $this->rules);
+
         $input = array_except(Input::all(), '_method');
-        $project->update($input);
+        $this->project_repository->update($input, $project->id);
 
         return Redirect::route('projects.show', $project->slug)->with('message', 'Project updated');
     }
 
-    public function destoroy(Project $project)
+    public function destroy(Project $project)
     {
-        $project->delete();
+        $this->project_repository->destroy($project->id);
 
         return Redirect::route('projects.index')->with('message', 'Project deleted');
     }
