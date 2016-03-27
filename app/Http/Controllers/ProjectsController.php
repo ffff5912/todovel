@@ -11,6 +11,11 @@ use App\Http\Controllers;
 
 class ProjectsController extends Controller
 {
+    protected $roles = [
+        'name' => ['required' => 'min:3'],
+        'slug' => ['required'],
+    ];
+
     public function index()
     {
         $projects = Project::all();
@@ -22,8 +27,10 @@ class ProjectsController extends Controller
         return view('projects.create');
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        $this->validate($request, $this->rules);
+
         $input = Input::all();
         Project::create($input);
 
@@ -40,8 +47,9 @@ class ProjectsController extends Controller
         return view('projects.show', compact('project'));
     }
 
-    public function update(Project $project)
+    public function update(Project $project, Request $request)
     {
+        $this->validate($request, $this->rules);
         $input = array_except(Input::all(), '_method');
         $project->update($input);
 
