@@ -15,14 +15,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('projects', 'ProjectsController');
-Route::resource('projects.tasks', 'TasksController');
+Route::Model('tasks', 'Task');
+Route::Model('projects', 'Project');
 
 Route::bind('tasks', function($value, $route) {
     return App\Task::whereSlug($value)->first();
 });
 Route::bind('projects', function($value, $route) {
-    return App\Projects::whereSlug($value)->first();
+    return App\Project::whereSlug($value)->first();
 });
 
 /*
@@ -37,5 +37,6 @@ Route::bind('projects', function($value, $route) {
 */
 
 Route::group(['middleware' => ['web']], function () {
-    //
+    Route::resource('projects', 'ProjectsController');
+    Route::resource('projects.tasks', 'TasksController');
 });
