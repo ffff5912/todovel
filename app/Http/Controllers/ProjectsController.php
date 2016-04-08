@@ -6,7 +6,7 @@ use Input;
 use Redirect;
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Project;
+use App\Models\Project;
 use App\Http\Controllers;
 use App\Repository\ProjectRepositoryInterface;
 

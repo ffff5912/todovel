@@ -15,14 +15,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::Model('tasks', 'Task');
-Route::Model('projects', 'Project');
+Route::Model('tasks', 'App\Models\Task');
+Route::Model('projects', 'App\Models\Project');
 
 Route::bind('tasks', function($value, $route) {
-    return App\Task::whereSlug($value)->first();
+    return App\Models\Task::whereSlug($value)->first();
 });
 Route::bind('projects', function($value, $route) {
-    return App\Project::whereSlug($value)->first();
+    return App\Models\Project::whereSlug($value)->first();
 });
 
 /*
