@@ -12,4 +12,9 @@ class Project extends Model
     {
         return $this->hasMany('App\Models\Task');
     }
+
+    public function photos()
+    {
+        return $this->hasMany('App\Models\Photo');
+    }
 }
