@@ -9,19 +9,22 @@ use App\Http\Requests;
 use App\Models\Project;
 use App\Http\Controllers;
 use App\Repository\ProjectRepositoryInterface;
+use App\Service\ProjectService;
 
 class ProjectsController extends Controller
 {
     private $project_repository;
+    private $service;
 
     protected $rules = [
         'name' => ['required' => 'min:3'],
         'slug' => ['required'],
     ];
 
-    public function __construct(ProjectRepositoryInterface $project_repository)
+    public function __construct(ProjectRepositoryInterface $project_repository, ProjectService $service)
     {
         $this->project_repository = $project_repository;
+        $this->service = $service;
     }
 
     public function index()
@@ -39,6 +42,9 @@ class ProjectsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, $this->rules);
+
+        $input = Input::all();
+        $this->service->movePhoto($input['photo']);
 
         $this->project_repository->store(Input::all());
 

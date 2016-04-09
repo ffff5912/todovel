@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Service\ProjectService;
 
 class TodoServiceProvider extends ServiceProvider
 {
@@ -31,5 +32,8 @@ class TodoServiceProvider extends ServiceProvider
             'App\Repository\TaskRepositoryInterface',
             'App\Repository\TaskRepository'
         );
+        $this->app->singleton(ProjectService::class, function ($app) {
+            return new ProjectService();
+        });
     }
 }
