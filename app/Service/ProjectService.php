@@ -3,13 +3,24 @@
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Illuminate\Http\Request;
+use App\Repository\ProjectRepositoryInterface;
 
 class ProjectService
 {
     const IMAGE_PATH = 'image/project';
 
-    public function __construct()
+    private $repository;
+
+    public function __construct(ProjectRepositoryInterface $repository)
     {
+        $this->repository = $repository;
+    }
+
+    public function register(Request $request)
+    {
+        $this->movePhoto($request->files->get('photo'));
+        $this->repository->store($request->all());
     }
 
     /**
