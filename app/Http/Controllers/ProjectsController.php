@@ -43,10 +43,8 @@ class ProjectsController extends Controller
     {
         $this->validate($request, $this->rules);
 
-        $input = Input::all();
-        $this->service->movePhoto($input['photo']);
-
-        $this->project_repository->store(Input::all());
+        $this->service->movePhoto($request->files->get('photo'));
+        $this->project_repository->store($request->all());
 
         return Redirect::route('projects.index')->with('message', 'Project created');
     }

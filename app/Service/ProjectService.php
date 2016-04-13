@@ -15,14 +15,21 @@ class ProjectService
     /**
      * @param  array  $files
      */
-    public function movePhoto(array $files)
+    public function movePhoto($file)
     {
-        $filtered = array_filter($files, function($file) {
-            return $file instanceof UploadedFile === true;
-        });
-
-        foreach ($filtered as $file) {
-            $file->move(self::IMAGE_PATH, $file->getClientOriginalName());
+        if (false === $this->validFile($file)) {
+            return;
         }
+
+        return $file->move(self::IMAGE_PATH, $file->getClientOriginalName());
+    }
+
+    private function validFile($file)
+    {
+        if (false === $file instanceof UploadedFile) {
+            return false;
+        }
+
+        return $file->isValid();
     }
 }
