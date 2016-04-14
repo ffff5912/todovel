@@ -24,7 +24,7 @@ class ProjectService
     {
         $file = $request->files->get('photo');
         if ($this->validFile($file)) {
-            $this->move($file);
+            $this->photo_service->move($file);
         }
 
         $this->repository->store($request->all());
