@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Service\ProjectService;
+use App\Service\PhotoService;
 
 class TodoServiceProvider extends ServiceProvider
 {
@@ -34,6 +35,9 @@ class TodoServiceProvider extends ServiceProvider
         );
         $this->app->singleton(ProjectService::class, function ($app) {
             return new ProjectService($app['App\Repository\ProjectRepositoryInterface']);
+        });
+        $this->app->singleton(PhotoService::class, function ($app) {
+            return new PhotoService();
         });
     }
 }
